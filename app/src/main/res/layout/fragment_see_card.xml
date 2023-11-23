@@ -17,7 +17,7 @@
         app:layout_constraintVertical_bias="0.1" />
 
     <ImageView
-        android:id="@+id/cardThumbnail"
+        android:id="@+id/card_image"
         android:layout_width="200sp"
         android:layout_height="200sp"
         android:contentDescription="@string/currOrPlaceholder"

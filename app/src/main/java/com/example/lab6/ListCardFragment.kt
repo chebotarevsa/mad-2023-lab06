@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +17,7 @@ class ListCardFragment : Fragment() {
     private var _binding: FragmentListCardBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: CustomRecyclerAdapter
+    private val viewModel: ListCardViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -24,7 +26,9 @@ class ListCardFragment : Fragment() {
         val recyclerView: RecyclerView = binding.recyclerid
         recyclerView.layoutManager = LinearLayoutManager(context)
         adapter = CustomRecyclerAdapter(action).apply {
-            cards = Model.cards
+            viewModel.cards.observe(viewLifecycleOwner) {
+                cards = it
+            }
         }
         recyclerView.adapter = adapter
         binding.addbuttonid.setOnClickListener {
@@ -36,7 +40,9 @@ class ListCardFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        adapter.cards = Model.cards
+        viewModel.cards.observe(viewLifecycleOwner) {
+            adapter.cards = it
+        }
     }
 
     override fun onDestroy() {
@@ -51,18 +57,22 @@ class ListCardFragment : Fragment() {
         }
 
         override fun onDeleteCard(cardId: Int) {
-            val card = Model.getCardById(cardId)
-            AlertDialog.Builder(requireContext()).setIcon(android.R.drawable.ic_dialog_alert)
-                .setTitle("Вы действительно хотите удалить карточку?")
-                .setMessage("Будет удалена карточка:\n ${card.answer} / ${card.translation}")
-                .setPositiveButton("Да") { _, _ ->
-                    Model.removeCard(card.id)
-                    adapter.cards = Model.cards
-                }.setNegativeButton("Нет") { _, _ ->
-                    Toast.makeText(
-                        requireContext(), "Удаление отменено", Toast.LENGTH_LONG
-                    ).show()
-                }.show()
+            viewModel.setCardOfFragment(cardId)
+            viewModel.card.observe(viewLifecycleOwner) {
+                AlertDialog.Builder(requireContext()).setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle("Вы действительно хотите удалить карточку?")
+                    .setMessage(
+                        "Будет удалена карточка:" +
+                                "\n ${it.answer} / ${it.translation}"
+                    )
+                    .setPositiveButton("Да") { _, _ ->
+                        viewModel.removeCardById(cardId)
+                    }.setNegativeButton("Нет") { _, _ ->
+                        Toast.makeText(
+                            requireContext(), "Удаление отменено", Toast.LENGTH_LONG
+                        ).show()
+                    }.show()
+            }
         }
     }
 }

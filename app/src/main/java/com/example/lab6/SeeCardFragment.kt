@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.lab6.databinding.FragmentSeeCardBinding
@@ -14,19 +15,24 @@ class SeeCardFragment : Fragment() {
     private val binding get() = _binding!!
     private val args by navArgs<SeeCardFragmentArgs>()
     private val cardId by lazy { args.cardId }
+    private val viewModel: SeeCardViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSeeCardBinding.inflate(layoutInflater, container, false)
-        val card = Model.getCardById(cardId)
+        viewModel.setCardOfFragment(cardId)
 
-        binding.cardQuestion.text = getString(R.string.questionField, card.question)
-        binding.cardExample.text = getString(R.string.exampleField, card.example)
-        binding.cardAnswer.text = getString(R.string.answerField, card.answer)
-        binding.cardTranslation.text = getString(R.string.translationField, card.translation)
-        card.image?.let {
-            binding.cardThumbnail.setImageBitmap(it)
+        viewModel.card.observe(viewLifecycleOwner) {
+            binding.cardQuestion.text = getString(R.string.questionField, it.question)
+            binding.cardExample.text = getString(R.string.exampleField, it.example)
+            binding.cardAnswer.text = getString(R.string.answerField, it.answer)
+            binding.cardTranslation.text = getString(R.string.translationField, it.translation)
+            if (it.image != null) {
+                binding.cardImage.setImageBitmap(it.image)
+            } else {
+                binding.cardImage.setImageResource(R.drawable.wallpapericon)
+            }
         }
 
         binding.editButton.setOnClickListener {
@@ -38,7 +44,6 @@ class SeeCardFragment : Fragment() {
             val action = SeeCardFragmentDirections.actionSeeCardFragmentToListCardFragment()
             findNavController().navigate(action)
         }
-
         return binding.root
     }
 

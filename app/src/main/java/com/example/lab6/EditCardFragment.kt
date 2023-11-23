@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.lab6.databinding.FragmentEditCardBinding
@@ -17,19 +18,26 @@ class EditCardFragment : Fragment() {
     private var image: Bitmap? = null
     private val args by navArgs<EditCardFragmentArgs>()
     private val cardId by lazy { args.cardId }
+    private val viewModel: EditCardViewModel by viewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentEditCardBinding.inflate(layoutInflater, container, false)
-        val card = Model.getCardById(cardId)
 
-        binding.questionField.setText(card.question)
-        binding.exampleField.setText(card.example)
-        binding.answerField.setText(card.answer)
-        binding.translationField.setText(card.translation)
-        card.image?.let {
-            binding.cardImage.setImageBitmap(it)
+        viewModel.setCardOfFragment(cardId)
+
+        viewModel.card.observe(viewLifecycleOwner) {
+            binding.questionField.setText(it.question)
+            binding.exampleField.setText(it.example)
+            binding.answerField.setText(it.answer)
+            binding.translationField.setText(it.translation)
+            if (viewModel.card.value!!.image != null) {
+                binding.cardImage.setImageBitmap(it.image)
+            } else {
+                binding.cardImage.setImageResource(R.drawable.wallpapericon)
+            }
         }
 
         binding.cardImage.setOnClickListener {
@@ -61,10 +69,8 @@ class EditCardFragment : Fragment() {
 
                 else -> "Поле перевода отсутствует"
             }
-            val newCard = Model.updateCard(
-                card, question, example, answer, translation, image
-            )
-            Model.updateCardList(cardId, newCard)
+
+            viewModel.updateCardById(cardId, question, example, answer, translation, image)
             val action = EditCardFragmentDirections.actionEditCardFragmentToSeeCardFragment(cardId)
             findNavController().navigate(action)
         }
