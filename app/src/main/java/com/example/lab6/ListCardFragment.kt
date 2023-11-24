@@ -61,9 +61,7 @@ class ListCardFragment : Fragment() {
             AlertDialog.Builder(requireContext())
                 .setIcon(android.R.drawable.ic_menu_delete)
                 .setTitle("Вы действительно хотите удалить карточку?")
-                .setMessage("Будет удалена карточка:" +
-                            "\n ${viewModel.card.value!!.answer} " +
-                        "/ ${viewModel.card.value!!.translation}"
+                .setMessage("Будет удалена карточка:" + viewModel.getCardShortData()
                 )
                 .setPositiveButton("Да") { _, _ -> viewModel.removeCardById(cardId) }
                 .setNegativeButton("Нет") { _, _ ->

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 class SeeCardViewModel : ViewModel() {
     private var _card = MutableLiveData<Card>()
     val card: LiveData<Card> = _card
+
     fun setCardOfFragment(cardId: Int) {
         _card.value = Model.getCardById(cardId)
     }

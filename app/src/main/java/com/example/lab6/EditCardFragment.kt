@@ -36,9 +36,7 @@ class EditCardFragment : Fragment() {
             binding.translationField.setText(it.translation)
             if (it.image != null) {
                 binding.cardImage.setImageBitmap(it.image)
-                if (image == null) {
-                    image = it.image
-                }
+                image = it.image
             } else {
                 binding.cardImage.setImageResource(R.drawable.wallpapericon)
             }

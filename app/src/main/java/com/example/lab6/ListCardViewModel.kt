@@ -23,4 +23,8 @@ class ListCardViewModel : ViewModel() {
         Model.removeCard(cardId)
         _cards.value = Model.cards
     }
+
+    fun getCardShortData(): String {
+        return "\n ${card.value!!.answer} / ${card.value!!.translation}"
+    }
 }
