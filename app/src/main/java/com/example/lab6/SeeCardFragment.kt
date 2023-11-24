@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -24,9 +25,9 @@ class SeeCardFragment : Fragment() {
         viewModel.setCardOfFragment(cardId)
 
         viewModel.card.observe(viewLifecycleOwner) {
-            binding.cardQuestion.text = getString(R.string.questionField, it.question)
-            binding.cardExample.text = getString(R.string.exampleField, it.example)
-            binding.cardAnswer.text = getString(R.string.answerField, it.answer)
+            binding.cardQuestion.text = getString(R.string.question_field, it.question)
+            binding.cardExample.text = getString(R.string.example_field, it.example)
+            binding.cardAnswer.text = getString(R.string.answer_field, it.answer)
             binding.cardTranslation.text = getString(R.string.translationField, it.translation)
             if (it.image != null) {
                 binding.cardImage.setImageBitmap(it.image)
@@ -44,6 +45,12 @@ class SeeCardFragment : Fragment() {
             val action = SeeCardFragmentDirections.actionSeeCardFragmentToListCardFragment()
             findNavController().navigate(action)
         }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val action = SeeCardFragmentDirections.actionSeeCardFragmentToListCardFragment()
+                findNavController().navigate(action)
+            }
+        })
         return binding.root
     }
 

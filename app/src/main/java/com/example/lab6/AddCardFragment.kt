@@ -30,21 +30,25 @@ class AddCardFragment : Fragment() {
             val question = when {
                 binding.enterQuestion.text.toString()
                     .isNotEmpty() -> binding.enterQuestion.text.toString()
+
                 else -> "Поле вопроса отсутствует"
             }
             val example = when {
                 binding.enterExample.text.toString()
                     .isNotEmpty() -> binding.enterExample.text.toString()
+
                 else -> "Поле примера отсутствует"
             }
             val answer = when {
                 binding.enterAnswer.text.toString()
                     .isNotEmpty() -> binding.enterAnswer.text.toString()
+
                 else -> "Поле ответа отсутствует"
             }
             val translation = when {
                 binding.enterTranslation.text.toString()
                     .isNotEmpty() -> binding.enterTranslation.text.toString()
+
                 else -> "Поле перевода отсутствует"
             }
             viewModel.addCard(question, example, answer, translation, image)

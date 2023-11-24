@@ -26,6 +26,7 @@ class EditCardFragment : Fragment() {
     ): View {
         _binding = FragmentEditCardBinding.inflate(layoutInflater, container, false)
 
+        this.requireActivity()
         viewModel.setCardOfFragment(cardId)
 
         viewModel.card.observe(viewLifecycleOwner) {
@@ -33,17 +34,18 @@ class EditCardFragment : Fragment() {
             binding.exampleField.setText(it.example)
             binding.answerField.setText(it.answer)
             binding.translationField.setText(it.translation)
-            if (viewModel.card.value!!.image != null) {
+            if (it.image != null) {
                 binding.cardImage.setImageBitmap(it.image)
+                if (image == null) {
+                    image = it.image
+                }
             } else {
                 binding.cardImage.setImageResource(R.drawable.wallpapericon)
             }
         }
-
         binding.cardImage.setOnClickListener {
             getSystemContent.launch("image/*")
         }
-
         binding.saveButton.setOnClickListener {
             val question = when {
                 binding.questionField.text.toString()
@@ -69,11 +71,11 @@ class EditCardFragment : Fragment() {
 
                 else -> "Поле перевода отсутствует"
             }
-
             viewModel.updateCardById(cardId, question, example, answer, translation, image)
             val action = EditCardFragmentDirections.actionEditCardFragmentToSeeCardFragment(cardId)
             findNavController().navigate(action)
         }
+
         return binding.root
     }
 

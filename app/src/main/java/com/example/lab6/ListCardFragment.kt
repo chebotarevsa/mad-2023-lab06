@@ -58,21 +58,19 @@ class ListCardFragment : Fragment() {
 
         override fun onDeleteCard(cardId: Int) {
             viewModel.setCardOfFragment(cardId)
-            viewModel.card.observe(viewLifecycleOwner) {
-                AlertDialog.Builder(requireContext()).setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle("Вы действительно хотите удалить карточку?")
-                    .setMessage(
-                        "Будет удалена карточка:" +
-                                "\n ${it.answer} / ${it.translation}"
-                    )
-                    .setPositiveButton("Да") { _, _ ->
-                        viewModel.removeCardById(cardId)
-                    }.setNegativeButton("Нет") { _, _ ->
-                        Toast.makeText(
-                            requireContext(), "Удаление отменено", Toast.LENGTH_LONG
-                        ).show()
-                    }.show()
-            }
+            AlertDialog.Builder(requireContext())
+                .setIcon(android.R.drawable.ic_menu_delete)
+                .setTitle("Вы действительно хотите удалить карточку?")
+                .setMessage("Будет удалена карточка:" +
+                            "\n ${viewModel.card.value!!.answer} " +
+                        "/ ${viewModel.card.value!!.translation}"
+                )
+                .setPositiveButton("Да") { _, _ -> viewModel.removeCardById(cardId) }
+                .setNegativeButton("Нет") { _, _ ->
+                    Toast
+                        .makeText(requireContext(), "Удаление отменено", Toast.LENGTH_LONG)
+                        .show()
+                }.show()
         }
     }
 }
