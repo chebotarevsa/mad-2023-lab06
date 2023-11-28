@@ -38,13 +38,6 @@ class ListCardFragment : Fragment() {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.cards.observe(viewLifecycleOwner) {
-            adapter.cards = it
-        }
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         _binding = null

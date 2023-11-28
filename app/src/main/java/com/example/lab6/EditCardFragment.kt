@@ -1,10 +1,11 @@
 package com.example.lab6
 
-import android.graphics.Bitmap
 import android.os.Bundle
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,7 +16,6 @@ import com.example.lab6.databinding.FragmentEditCardBinding
 class EditCardFragment : Fragment() {
     private var _binding: FragmentEditCardBinding? = null
     private val binding get() = _binding!!
-    private var image: Bitmap? = null
     private val args by navArgs<EditCardFragmentArgs>()
     private val cardId by lazy { args.cardId }
     private val viewModel: EditCardViewModel by viewModels()
@@ -26,60 +26,100 @@ class EditCardFragment : Fragment() {
     ): View {
         _binding = FragmentEditCardBinding.inflate(layoutInflater, container, false)
 
-        this.requireActivity()
-        viewModel.setCardOfFragment(cardId)
+        with(viewModel) {
+            with(binding) {
+                setCardOfFragment(cardId)
+                card.observe(viewLifecycleOwner) {
+                    questionField.setText(it.question)
+                    exampleField.setText(it.example)
+                    answerField.setText(it.answer)
+                    translationField.setText(it.translation)
+                    if (it.image != null) {
+                        cardImage.setImageBitmap(it.image)
+                        setImage(it.image)
+                    } else {
+                        cardImage.setImageResource(R.drawable.wallpapericon)
+                    }
+                }
+                questionError.observe(viewLifecycleOwner) {
+                    if (it.isNotBlank()) {
+                        questionField.error = it
+                    }
+                }
+                exampleError.observe(viewLifecycleOwner) {
+                    if (it.isNotBlank()) {
+                        exampleField.error = it
+                    }
+                }
+                answerError.observe(viewLifecycleOwner) {
+                    if (it.isNotBlank()) {
+                        answerField.error = it
+                    }
+                }
+                translationError.observe(viewLifecycleOwner) {
+                    if (it.isNotBlank()) {
+                        translationField.error = it
+                    }
+                }
+                image.observe(viewLifecycleOwner) {
+                    cardImage.setImageBitmap(it)
+                }
+                status.observe(viewLifecycleOwner) {
+                    if (it.isProcessed) return@observe
+                    when (it) {
+                        is Failed -> {
+                            Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                        }
 
-        viewModel.card.observe(viewLifecycleOwner) {
-            binding.questionField.setText(it.question)
-            binding.exampleField.setText(it.example)
-            binding.answerField.setText(it.answer)
-            binding.translationField.setText(it.translation)
-            if (it.image != null) {
-                binding.cardImage.setImageBitmap(it.image)
-                image = it.image
-            } else {
-                binding.cardImage.setImageResource(R.drawable.wallpapericon)
+                        is Success -> {
+                            val action =
+                                EditCardFragmentDirections.actionEditCardFragmentToSeeCardFragment(
+                                    cardId
+                                )
+                            findNavController().navigate(action)
+                        }
+                    }
+                    it.isProcessed = true
+                }
+                cardImage.setOnClickListener {
+                    getSystemContent.launch("image/*")
+                }
+                questionField.addTextChangedListener(object : CustomEmptyTextWatcher() {
+                    override fun afterTextChanged(s: Editable?) {
+                        validateQuestion(s.toString())
+                    }
+                })
+                exampleField.addTextChangedListener(object : CustomEmptyTextWatcher() {
+                    override fun afterTextChanged(s: Editable?) {
+                        validateExample(s.toString())
+                    }
+                })
+                answerField.addTextChangedListener(object : CustomEmptyTextWatcher() {
+                    override fun afterTextChanged(s: Editable?) {
+                        validateAnswer(s.toString())
+                    }
+                })
+                translationField.addTextChangedListener(object : CustomEmptyTextWatcher() {
+                    override fun afterTextChanged(s: Editable?) {
+                        validateTranslation(s.toString())
+                    }
+                })
+                saveButton.setOnClickListener {
+                    updateCardById(
+                        cardId,
+                        questionField.text.toString(),
+                        exampleField.text.toString(),
+                        answerField.text.toString(),
+                        translationField.text.toString(),
+                    )
+                }
+                return root
             }
         }
-        binding.cardImage.setOnClickListener {
-            getSystemContent.launch("image/*")
-        }
-        binding.saveButton.setOnClickListener {
-            val question = when {
-                binding.questionField.text.toString()
-                    .isNotEmpty() -> binding.questionField.text.toString()
-
-                else -> "Поле вопроса отсутствует"
-            }
-            val example = when {
-                binding.exampleField.text.toString()
-                    .isNotEmpty() -> binding.exampleField.text.toString()
-
-                else -> "Поле примера отсутствует"
-            }
-            val answer = when {
-                binding.answerField.text.toString()
-                    .isNotEmpty() -> binding.answerField.text.toString()
-
-                else -> "Поле ответа отсутствует"
-            }
-            val translation = when {
-                binding.translationField.text.toString()
-                    .isNotEmpty() -> binding.translationField.text.toString()
-
-                else -> "Поле перевода отсутствует"
-            }
-            viewModel.updateCardById(cardId, question, example, answer, translation, image)
-            val action = EditCardFragmentDirections.actionEditCardFragmentToSeeCardFragment(cardId)
-            findNavController().navigate(action)
-        }
-
-        return binding.root
     }
 
     private val getSystemContent = registerForActivityResult(ActivityResultContracts.GetContent()) {
-        image = it.bitmap(requireContext())
-        binding.cardImage.setImageBitmap(image)
+        viewModel.setImage(it.bitmap(requireContext()))
     }
 
     override fun onDestroy() {
@@ -87,3 +127,4 @@ class EditCardFragment : Fragment() {
         _binding = null
     }
 }
+
