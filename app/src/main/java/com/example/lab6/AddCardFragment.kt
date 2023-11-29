@@ -1,10 +1,11 @@
 package com.example.lab6
 
-import android.graphics.Bitmap
 import android.os.Bundle
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -14,7 +15,6 @@ import com.example.lab6.databinding.FragmentAddCardBinding
 class AddCardFragment : Fragment() {
     private var _binding: FragmentAddCardBinding? = null
     private val binding get() = _binding!!
-    private var image: Bitmap? = null
     private val viewModel: AddCardViewModel by viewModels()
 
     override fun onCreateView(
@@ -22,46 +22,88 @@ class AddCardFragment : Fragment() {
     ): View {
         _binding = FragmentAddCardBinding.inflate(layoutInflater, container, false)
 
-        binding.cardImage.setOnClickListener {
-            getSystemContent.launch("image/*")
+        with(binding) {
+            with(viewModel) {
+                cardImage.setOnClickListener {
+                    getSystemContent.launch("image/*")
+                }
+                viewModel.image.observe(viewLifecycleOwner) {
+                    cardImage.setImageBitmap(it)
+                }
+                questionError.observe(viewLifecycleOwner) {
+                    if (it.isNotBlank()) {
+                        enterQuestion.error = it
+                    }
+                }
+                exampleError.observe(viewLifecycleOwner) {
+                    if (it.isNotBlank()) {
+                        enterExample.error = it
+                    }
+                }
+                answerError.observe(viewLifecycleOwner) {
+                    if (it.isNotBlank()) {
+                        enterAnswer.error = it
+                    }
+                }
+                translationError.observe(viewLifecycleOwner) {
+                    if (it.isNotBlank()) {
+                        enterTranslation.error = it
+                    }
+                }
+                image.observe(viewLifecycleOwner) {
+                    cardImage.setImageBitmap(it)
+                }
+                status.observe(viewLifecycleOwner) {
+                    if (it.isProcessed) return@observe
+                    if (it is Failed) {
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                    }
+                    else if (it is Success) {
+                        val action =
+                            AddCardFragmentDirections.actionAddCardFragmentToListCardFragment()
+                        findNavController().navigate(action)
+                    }
+                    it.isProcessed = true
+                }
+                cardImage.setOnClickListener {
+                    getSystemContent.launch("image/*")
+                }
+                enterQuestion.addTextChangedListener(object : CustomEmptyTextWatcher() {
+                    override fun afterTextChanged(s: Editable?) {
+                        validateQuestion(s.toString())
+                    }
+                })
+                enterExample.addTextChangedListener(object : CustomEmptyTextWatcher() {
+                    override fun afterTextChanged(s: Editable?) {
+                        validateExample(s.toString())
+                    }
+                })
+                enterAnswer.addTextChangedListener(object : CustomEmptyTextWatcher() {
+                    override fun afterTextChanged(s: Editable?) {
+                        validateAnswer(s.toString())
+                    }
+                })
+                enterTranslation.addTextChangedListener(object : CustomEmptyTextWatcher() {
+                    override fun afterTextChanged(s: Editable?) {
+                        validateTranslation(s.toString())
+                    }
+                })
+                addButton.setOnClickListener {
+                    viewModel.addCard(
+                        enterQuestion.text.toString(),
+                        enterExample.text.toString(),
+                        enterAnswer.text.toString(),
+                        enterTranslation.text.toString(),
+                        viewModel.image.value
+                    )
+                }
+                return root
+            }
         }
-
-        binding.addButton.setOnClickListener {
-            val question = when {
-                binding.enterQuestion.text.toString()
-                    .isNotEmpty() -> binding.enterQuestion.text.toString()
-
-                else -> "Поле вопроса отсутствует"
-            }
-            val example = when {
-                binding.enterExample.text.toString()
-                    .isNotEmpty() -> binding.enterExample.text.toString()
-
-                else -> "Поле примера отсутствует"
-            }
-            val answer = when {
-                binding.enterAnswer.text.toString()
-                    .isNotEmpty() -> binding.enterAnswer.text.toString()
-
-                else -> "Поле ответа отсутствует"
-            }
-            val translation = when {
-                binding.enterTranslation.text.toString()
-                    .isNotEmpty() -> binding.enterTranslation.text.toString()
-
-                else -> "Поле перевода отсутствует"
-            }
-            viewModel.addCard(question, example, answer, translation, image)
-            val action = AddCardFragmentDirections.actionAddCardFragmentToListCardFragment()
-            findNavController().navigate(action)
-        }
-
-        return binding.root
     }
 
     private val getSystemContent = registerForActivityResult(ActivityResultContracts.GetContent()) {
-        image = it.bitmap(requireContext())
-        binding.cardImage.setImageBitmap(image)
+        viewModel.setImage(it.bitmap(requireContext()))
     }
 
     override fun onDestroy() {
