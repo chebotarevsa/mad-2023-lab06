@@ -10,11 +10,11 @@
         android:label="fragment_list_card"
         tools:layout="@layout/fragment_list_card" >
         <action
-            android:id="@+id/action_listCardFragment_to_addCardFragment"
-            app:destination="@id/addCardFragment" />
-        <action
             android:id="@+id/action_listCardFragment_to_seeCardFragment"
             app:destination="@id/seeCardFragment" />
+        <action
+            android:id="@+id/action_listCardFragment_to_editCardFragment"
+            app:destination="@id/editCardFragment" />
     </fragment>
     <fragment
         android:id="@+id/seeCardFragment"
@@ -42,14 +42,8 @@
         <argument
             android:name="cardId"
             app:argType="integer" />
-    </fragment>
-    <fragment
-        android:id="@+id/addCardFragment"
-        android:name="com.example.lab6.AddCardFragment"
-        android:label="fragment_add_card"
-        tools:layout="@layout/fragment_add_card" >
         <action
-            android:id="@+id/action_addCardFragment_to_listCardFragment"
+            android:id="@+id/action_editCardFragment_to_listCardFragment"
             app:destination="@id/listCardFragment" />
     </fragment>
 </navigation>

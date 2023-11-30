@@ -43,7 +43,9 @@ class EditCardViewModel : ViewModel() {
     val image: LiveData<Bitmap?> = _image
 
     fun setCardOfFragment(cardId: Int) {
-        _card.value = Model.getCardById(cardId)
+        if (cardId != -1) {
+            _card.value = Model.getCardById(cardId)
+        }
     }
 
     fun updateCardById(
@@ -55,10 +57,26 @@ class EditCardViewModel : ViewModel() {
     ) = if (question.isBlank() || example.isBlank() || answer.isBlank() || translation.isBlank()) {
         _status.value = Failed("One or several fields are blank")
     } else {
-        with (Model) {
-            updateCard(card.value!!, question, example, answer, translation, image.value)
-                .also { _card.value = it }
+        with(Model) {
+            updateCard(
+                card.value!!, question, example, answer, translation, image.value
+            ).also { _card.value = it }
             updateCardList(cardId, card.value!!)
+        }
+        _status.value = Success()
+    }
+
+    fun addCard(
+        question: String, example: String, answer: String, translation: String, image: Bitmap?
+    ) = if (question.isBlank() || example.isBlank() || answer.isBlank() || translation.isBlank()) {
+        _status.value = Failed("One or several fields are blank")
+    } else {
+        with(Model) {
+            createNewCard(
+                question, example, answer, translation, image
+            ).also {
+                _card.value = it
+                addCardToList(it) }
         }
         _status.value = Success()
     }

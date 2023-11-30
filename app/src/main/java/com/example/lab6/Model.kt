@@ -41,7 +41,7 @@ object Model {
         }
     }
 
-    fun addCard(card: Card) {
+    fun addCardToList(card: Card) {
         _cards.add(card)
     }
 

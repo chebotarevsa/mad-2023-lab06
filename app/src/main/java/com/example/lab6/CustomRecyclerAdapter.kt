@@ -19,7 +19,9 @@ class CustomRecyclerAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardHolder {
         val itemView =
-            LayoutInflater.from(parent.context).inflate(R.layout.recycler_item, parent, false)
+            LayoutInflater
+                .from(parent.context)
+                .inflate(R.layout.recycler_item, parent, false)
         return CardHolder(itemView)
     }
 
@@ -28,7 +30,7 @@ class CustomRecyclerAdapter(
     override fun onBindViewHolder(holder: CardHolder, position: Int) {
         val card = cards[position]
         if (card.image != null) {
-            holder.thumbnailImage.setImageBitmap(cards[position].image)
+            holder.thumbnailImage.setImageBitmap(card.image)
         } else {
             holder.thumbnailImage.setImageResource(R.drawable.wallpapericon)
         }
@@ -47,7 +49,6 @@ class CustomRecyclerAdapter(
             field = value
             notifyDataSetChanged()
         }
-        get() = field
 }
 
 interface ActionInterface {

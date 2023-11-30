@@ -24,34 +24,38 @@ class SeeCardFragment : Fragment() {
         _binding = FragmentSeeCardBinding.inflate(layoutInflater, container, false)
         viewModel.setCardOfFragment(cardId)
 
-        viewModel.card.observe(viewLifecycleOwner) {
-            binding.cardQuestion.text = getString(R.string.question_field, it.question)
-            binding.cardExample.text = getString(R.string.example_field, it.example)
-            binding.cardAnswer.text = getString(R.string.answer_field, it.answer)
-            binding.cardTranslation.text = getString(R.string.translationField, it.translation)
-            if (it.image != null) {
-                binding.cardImage.setImageBitmap(it.image)
-            } else {
-                binding.cardImage.setImageResource(R.drawable.wallpapericon)
+        with(binding) {
+            viewModel.card.observe(viewLifecycleOwner) {
+                cardQuestion.text = getString(R.string.question_field, it.question)
+                cardExample.text = getString(R.string.example_field, it.example)
+                cardAnswer.text = getString(R.string.answer_field, it.answer)
+                cardTranslation.text = getString(R.string.translationField, it.translation)
+                if (it.image != null) {
+                    cardImage.setImageBitmap(it.image)
+                } else {
+                    cardImage.setImageResource(R.drawable.wallpapericon)
+                }
             }
-        }
-
-        binding.editButton.setOnClickListener {
-            val action = SeeCardFragmentDirections.actionSeeCardFragmentToEditCardFragment(cardId)
-            findNavController().navigate(action)
-        }
-
-        binding.backButton.setOnClickListener {
-            val action = SeeCardFragmentDirections.actionSeeCardFragmentToListCardFragment()
-            findNavController().navigate(action)
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                val action = SeeCardFragmentDirections.actionSeeCardFragmentToListCardFragment()
-                findNavController().navigate(action)
+            editButton.setOnClickListener {
+                val navAction =
+                    SeeCardFragmentDirections.actionSeeCardFragmentToEditCardFragment(cardId)
+                findNavController().navigate(navAction)
             }
-        })
-        return binding.root
+            backButton.setOnClickListener {
+                val navAction = SeeCardFragmentDirections.actionSeeCardFragmentToListCardFragment()
+                findNavController().navigate(navAction)
+            }
+            requireActivity().onBackPressedDispatcher.addCallback(
+                viewLifecycleOwner,
+                object : OnBackPressedCallback(true) {
+                    override fun handleOnBackPressed() {
+                        val action =
+                            SeeCardFragmentDirections.actionSeeCardFragmentToListCardFragment()
+                        findNavController().navigate(action)
+                    }
+                })
+            return root
+        }
     }
 
     override fun onDestroy() {

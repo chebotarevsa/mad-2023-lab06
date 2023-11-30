@@ -27,8 +27,8 @@ class EditCardFragment : Fragment() {
         _binding = FragmentEditCardBinding.inflate(layoutInflater, container, false)
 
         with(viewModel) {
+            setCardOfFragment(cardId)
             with(binding) {
-                setCardOfFragment(cardId)
                 card.observe(viewLifecycleOwner) {
                     questionField.setText(it.question)
                     exampleField.setText(it.example)
@@ -40,6 +40,12 @@ class EditCardFragment : Fragment() {
                     } else {
                         cardImage.setImageResource(R.drawable.wallpapericon)
                     }
+                }
+                image.observe(viewLifecycleOwner) {
+                    cardImage.setImageBitmap(it)
+                }
+                cardImage.setOnClickListener {
+                    getSystemContent.launch("image/*")
                 }
                 questionError.observe(viewLifecycleOwner) {
                     if (it.isNotBlank()) {
@@ -61,28 +67,26 @@ class EditCardFragment : Fragment() {
                         translationField.error = it
                     }
                 }
-                image.observe(viewLifecycleOwner) {
-                    cardImage.setImageBitmap(it)
-                }
                 status.observe(viewLifecycleOwner) {
-                    if (it.isProcessed) return@observe
-                    when (it) {
-                        is Failed -> {
-                            Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
-                        }
-
-                        is Success -> {
-                            val action =
+                    if (it.isProcessed) {
+                        return@observe
+                    }
+                    if (it is Failed) {
+                        Toast.makeText(requireContext(), it.message, Toast.LENGTH_LONG).show()
+                    } else if (it is Success) {
+                        if (cardId != -1) {
+                            val navAction =
                                 EditCardFragmentDirections.actionEditCardFragmentToSeeCardFragment(
                                     cardId
                                 )
-                            findNavController().navigate(action)
+                            findNavController().navigate(navAction)
+                        } else {
+                            val navAction =
+                                EditCardFragmentDirections.actionEditCardFragmentToListCardFragment()
+                            findNavController().navigate(navAction)
                         }
                     }
                     it.isProcessed = true
-                }
-                cardImage.setOnClickListener {
-                    getSystemContent.launch("image/*")
                 }
                 questionField.addTextChangedListener(object : CustomEmptyTextWatcher() {
                     override fun afterTextChanged(s: Editable?) {
@@ -105,13 +109,23 @@ class EditCardFragment : Fragment() {
                     }
                 })
                 saveButton.setOnClickListener {
-                    updateCardById(
-                        cardId,
-                        questionField.text.toString(),
-                        exampleField.text.toString(),
-                        answerField.text.toString(),
-                        translationField.text.toString(),
-                    )
+                    if (card.value != null) {
+                        updateCardById(
+                            cardId,
+                            questionField.text.toString(),
+                            exampleField.text.toString(),
+                            answerField.text.toString(),
+                            translationField.text.toString(),
+                        )
+                    } else {
+                        addCard(
+                            questionField.text.toString(),
+                            exampleField.text.toString(),
+                            answerField.text.toString(),
+                            translationField.text.toString(),
+                            image.value
+                        )
+                    }
                 }
                 return root
             }
