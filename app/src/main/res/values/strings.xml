@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Lab4</string>
+    <string name="app_name">Lab6</string>
     <string name="textAbove">Word</string>
     <string name="textBelow">Translation</string>
     <string name="addButton">addButton</string>
@@ -18,6 +18,4 @@
     <string name="enterQuestion">Enter Question</string>
     <string name="editingCard">Editing Card</string>
     <string name="saveButton">saveButton</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -13,9 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.lab5.databinding.FragmentCardListBinding
 
 class CardListFragment : Fragment() {
-    private var _binding: FragmentCardListBinding? = null //Для привязки макета
-    private val binding get() = _binding!! //Не может быть пустым, вызовет значение _binding
-    private lateinit var adapter: AdapterRecyclerView //Адаптер
+    private var _binding: FragmentCardListBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var adapter: AdapterRecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,16 +30,17 @@ class CardListFragment : Fragment() {
         }
         recyclerView.adapter = adapter
 
-        binding.addButton.setOnClickListener {//Кнопка добавления нового элемента
+        binding.addButton.setOnClickListener {
             val action =
-                CardListFragmentDirections.actionCardListFragmentToCardAddFragment() //Переход на другой элемент
-            findNavController().navigate(action) //Получение контроллера
+                CardListFragmentDirections.actionCardListFragmentToCardAddFragment()
+            findNavController().navigate(action)
         }
         return binding.root
 
     }
 
-    private val action = object : ActionInterface { //Перенесено из адаптера
+    //Ондестройя нету
+    private val action = object : ActionInterface {
         override fun onItemClick(cardId: Int) {
             val action = CardListFragmentDirections.actionCardListFragmentToCardSeeFragment(cardId)
             findNavController().navigate(action)
