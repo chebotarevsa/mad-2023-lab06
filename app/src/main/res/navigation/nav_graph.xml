@@ -48,5 +48,8 @@
         <argument
             android:name="cardId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_viewCardFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
     </fragment>
 </navigation>

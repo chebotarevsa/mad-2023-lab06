@@ -11,10 +11,9 @@ import com.example.myapplication.databinding.RecyclerItemBinding
 class CardAdapter(
     private val action: ActionInterface,
     private var cardList: List<Card>,
-    private val context: Context
 ) : RecyclerView.Adapter<CardAdapter.CardViewHolder>() {
 
-    class CardViewHolder(private val binding: RecyclerItemBinding) :
+    class CardViewHolder(binding: RecyclerItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val thumbnail: ImageView = binding.thumbnail
         val answerText: TextView = binding.answer

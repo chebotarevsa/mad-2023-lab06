@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.myapplication.databinding.FragmentAddCardBinding
 import com.google.android.material.snackbar.Snackbar
@@ -14,8 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 class AddCardFragment : Fragment() {
     private var _binding: FragmentAddCardBinding? = null
     private val binding get() = _binding!!
-    private var image: Bitmap? = null
-
+    private val viewModel: AddCardViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -28,15 +28,16 @@ class AddCardFragment : Fragment() {
                 val example = binding.hintAddText.text.toString()
                 val answer = binding.answerAddText.text.toString()
                 val translation = binding.translationAddText.text.toString()
-                val newCard = Model.NewCard(question, example, answer, translation, image)
-                Model.addCard(newCard)
+                viewModel.addCard(question, example, answer, translation, viewModel.image.value)
                 val action = AddCardFragmentDirections.actionAddCardFragmentToMainFragment()
                 findNavController().navigate(action)
             } else {
                 fieldsIncompleteError()
             }
         }
-
+        viewModel.image.observe(viewLifecycleOwner){
+            binding.cardImage.setImageBitmap(it)
+        }
         binding.cardImage.setOnClickListener {
             getSystemContent.launch("image/*")
         }
@@ -53,7 +54,6 @@ class AddCardFragment : Fragment() {
     }
 
     private val getSystemContent = registerForActivityResult(ActivityResultContracts.GetContent()) {
-        image = it.bitmap(requireContext())
-        binding.cardImage.setImageBitmap(image)
+        viewModel.setImageToCard(it.bitmap(requireContext()))
     }
 }
