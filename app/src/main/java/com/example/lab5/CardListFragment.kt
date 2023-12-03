@@ -11,22 +11,26 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lab5.databinding.FragmentCardListBinding
+import androidx.fragment.app.viewModels
 
 class CardListFragment : Fragment() {
     private var _binding: FragmentCardListBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: AdapterRecyclerView
+    private val view_model: CardListViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentCardListBinding.inflate(layoutInflater)
         val recyclerView: RecyclerView = binding.recyclerId
         recyclerView.layoutManager = LinearLayoutManager(context)
         adapter = AdapterRecyclerView(action).apply {
-            cards = Model.cards
+            view_model.list_cards.observe(viewLifecycleOwner){ //Обновление карточки
+                cards = it
+            }
         }
         recyclerView.adapter = adapter
 
@@ -38,8 +42,11 @@ class CardListFragment : Fragment() {
         return binding.root
 
     }
+    override fun onDestroy() { //Освобождение памяти
+        super.onDestroy()
+        _binding = null
+    }
 
-    //Ондестройя нету
     private val action = object : ActionInterface {
         override fun onItemClick(cardId: Int) {
             val action = CardListFragmentDirections.actionCardListFragmentToCardSeeFragment(cardId)
