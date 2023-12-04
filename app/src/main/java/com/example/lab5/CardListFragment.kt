@@ -36,7 +36,7 @@ class CardListFragment : Fragment() {
 
         binding.addButton.setOnClickListener {
             val action =
-                CardListFragmentDirections.actionCardListFragmentToCardAddFragment()
+                CardListFragmentDirections.actionCardListFragmentToCardEditFragment(-1)
             findNavController().navigate(action)
         }
         return binding.root

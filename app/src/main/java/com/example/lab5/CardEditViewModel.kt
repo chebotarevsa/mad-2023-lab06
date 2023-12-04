@@ -22,8 +22,8 @@ open class CustomEmptyTextWatcher : TextWatcher { //Открытый класс,
 
 } //Unit - нет возвращаемого
 class CardEditViewModel : ViewModel() {
-    private var Mcards = MutableLiveData<Card>()
-    val сards: LiveData<Card> = Mcards
+    private var Mcard = MutableLiveData<Card>()
+    val сard: LiveData<Card> = Mcard
     private var Mquestion_error = MutableLiveData<String>()
     val question_error: LiveData<String> = Mquestion_error
     private var Mexample_error = MutableLiveData<String>()
@@ -39,7 +39,7 @@ class CardEditViewModel : ViewModel() {
 
     fun setCardOfFragment(cardId: Int) {
         if (cardId != -1) {
-            Mcards.value = Model.getCardById(cardId)
+            Mcard.value = Model.getCardById(cardId)
         }
     }
 
@@ -50,13 +50,13 @@ class CardEditViewModel : ViewModel() {
         answer: String,
         translation: String,
     ) = if (question.isBlank() || example.isBlank() || answer.isBlank() || translation.isBlank()) {
-        Mstatus.value = Failed("One or several fields are blank")
+        Mstatus.value = Failed("Одно из полей или несколько не было заполнено")
     } else {
         with(Model) {
             updateCard(
-                сards.value!!, question, example, answer, translation, image.value
-            ).also { Mcards.value = it }
-            updateCardList(cardId, сards.value!!)
+                сard.value!!, question, example, answer, translation, image.value
+            ).also { Mcard.value = it }
+            updateCardList(cardId, сard.value!!)
         }
         Mstatus.value = Success()
     }
@@ -64,13 +64,13 @@ class CardEditViewModel : ViewModel() {
     fun addCard(
         question: String, example: String, answer: String, translation: String, image: Bitmap?
     ) = if (question.isBlank() || example.isBlank() || answer.isBlank() || translation.isBlank()) {
-        Mstatus.value = Failed("One or several fields are blank")
+        Mstatus.value = Failed("Одно из полей или несколько не было заполнено")
     } else {
         with(Model) {
             createNewCard(
                 question, example, answer, translation, image
             ).also {
-                Mcards.value = it
+                Mcard.value = it
                 addCardToList(it) }
         }
         Mstatus.value = Success()
@@ -82,25 +82,25 @@ class CardEditViewModel : ViewModel() {
 
     fun validateQuestion(question: String) {
         if (question.isBlank()) {
-            Mquestion_error.value = "Error"
+            Mquestion_error.value = "Ошибка"
         }
     }
 
     fun validateExample(example: String) {
         if (example.isBlank()) {
-            Mexample_error.value = "Error"
+            Mexample_error.value = "Ошибка"
         }
     }
 
     fun validateAnswer(answer: String) {
         if (answer.isBlank()) {
-            Manswer_error.value = "Error"
+            Manswer_error.value = "Ошибка"
         }
     }
 
     fun validateTranslation(translation: String) {
         if (translation.isBlank()) {
-            Mtranslation_error.value = "Error"
+            Mtranslation_error.value = "Ошибка"
         }
     }
 

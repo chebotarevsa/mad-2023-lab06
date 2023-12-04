@@ -17,7 +17,6 @@ class CardEditFragment : Fragment() {
     private var _binding: FragmentCardEditBinding? = null
     private val binding get() = _binding!!
     private val viewModel: CardEditViewModel by viewModels()
-    //private var image: Bitmap? = null
 
     private val args by navArgs<CardEditFragmentArgs>()
     private val cardId by lazy { args.cardId }
@@ -25,14 +24,13 @@ class CardEditFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentCardEditBinding.inflate(layoutInflater)
-        //val card = Model.cards.get(cardId) //Получение самой карточки
+    ): View {
+        _binding = FragmentCardEditBinding.inflate(layoutInflater, container, false)
 
         with(viewModel) {
             setCardOfFragment(cardId)
             with(binding) {
-                сards.observe(viewLifecycleOwner) {
+                сard.observe(viewLifecycleOwner) {
                     questionField.setText(it.question)
                     exampleField.setText(it.example)
                     answerField.setText(it.answer)
@@ -112,7 +110,7 @@ class CardEditFragment : Fragment() {
                     }
                 })
                 saveButton.setOnClickListener {
-                    if (сards.value != null) {
+                    if (сard.value != null) {
                         updateCardById(
                             cardId,
                             questionField.text.toString(),
