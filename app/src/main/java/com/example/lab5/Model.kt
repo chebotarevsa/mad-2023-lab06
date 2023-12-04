@@ -33,6 +33,10 @@ object Model {
         _cards.add(card)
     }
 
+    fun addCardToList(card: Card) {
+        _cards.add(card)
+    }
+
     fun updateCardList(card1: Card, card2: Card) {
         val num = _cards.indexOf(card1)
         _cards.remove(card1)
