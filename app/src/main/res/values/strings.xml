@@ -4,7 +4,7 @@
 
     <string name="adding_card">Add Card</string>
     <string name="seeing_card">Seeing Card</string>
-    <string name="editing_card">Editing Card</string>
+    <string name="editing_card">Card manager</string>
     <string name="andrey_photo">Andrey photo</string>
 
     <string name="question_field">Question: %1$s</string>

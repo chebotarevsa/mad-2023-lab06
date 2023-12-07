@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.lab6.databinding.FragmentSeeBinding
@@ -15,6 +17,7 @@ class SeeFragment : Fragment() {
     private val binding get() = _binding!!
     private val args by navArgs<SeeFragmentArgs>()
     private val cardId by lazy { args.cardId }
+    private val viewModel: SeeViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -22,21 +25,33 @@ class SeeFragment : Fragment() {
     ): View {
         super.onCreate(savedInstanceState)
         _binding = FragmentSeeBinding.inflate(layoutInflater, container, false)
+        viewModel.setCard(cardId)
 
-        val card = CardService.cards[cardId]
-
-        binding.cardQuestion.text = getString(R.string.question_field, card.question)
-        binding.cardExample.text = getString(R.string.example_field, card.example)
-        binding.cardAnswer.text = getString(R.string.answer_field, card.answer)
-        binding.cardTranslation.text = getString(R.string.translation_field, card.translation)
-        card.image?.let {
-            binding.cardThumbnail.setImageBitmap(it)
+        viewModel.card.observe(viewLifecycleOwner) {
+            binding.cardQuestion.text = getString(R.string.question_field, it.question)
+            binding.cardExample.text = getString(R.string.example_field, it.example)
+            binding.cardAnswer.text = getString(R.string.answer_field, it.answer)
+            binding.cardTranslation.text = getString(R.string.translation_field, it.translation)
+            if (it.image != null) {
+                binding.cardThumbnail.setImageBitmap(it.image)
+            } else {
+                binding.cardThumbnail.setImageResource(R.drawable.image_icon)
+            }
         }
 
         binding.editButton.setOnClickListener {
             val action = SeeFragmentDirections.actionSeeCardFragmentToEditCardFragment(cardId)
             findNavController().navigate(action)
         }
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    val action =
+                        SeeFragmentDirections.actionSeeCardFragmentToListCardFragment()
+                    findNavController().navigate(action)
+                }
+            })
         return binding.root
     }
 

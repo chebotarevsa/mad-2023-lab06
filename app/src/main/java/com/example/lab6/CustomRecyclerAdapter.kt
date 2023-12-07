@@ -1,5 +1,6 @@
 package com.example.lab6
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,14 +46,9 @@ class CustomRecyclerAdapter(
     }
 
     var cards: List<Card> = emptyList()
+        @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
             notifyDataSetChanged()
         }
-        get() = field
-}
-
-interface ActionInterface {
-    fun onItemClick(cardId: Int)
-    fun onDeleteCard(cardId: Int)
 }
