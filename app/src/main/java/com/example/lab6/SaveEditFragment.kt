@@ -28,44 +28,11 @@ class SaveEditFragment : Fragment() {
     ): View {
         _binding = FragmentSaveEditBinding.inflate(layoutInflater, container, false)
         viewModel.setCard(cardId)
-        viewModel.card.observe(viewLifecycleOwner) {
-            binding.questionField.setText(it.question)
-            binding.exampleField.setText(it.example)
-            binding.answerField.setText(it.answer)
-            binding.translationField.setText(it.translation)
-            if (it.image != null) {
-                binding.cardImage.setImageBitmap(it.image)
-                viewModel.setImage(it.image)
-            } else {
-                binding.cardImage.setImageResource(R.drawable.image_icon)
-            }
-        }
-        viewModel.image.observe(viewLifecycleOwner) {
-            binding.cardImage.setImageBitmap(it)
-        }
+        observeCardAndImage()
         binding.cardImage.setOnClickListener {
             getSystemContent.launch("image/*")
         }
-        viewModel.questionError.observe(viewLifecycleOwner) {
-            if (it.isNotBlank()) {
-                binding.questionField.error = it
-            }
-        }
-        viewModel.exampleError.observe(viewLifecycleOwner) {
-            if (it.isNotBlank()) {
-                binding.exampleField.error = it
-            }
-        }
-        viewModel.answerError.observe(viewLifecycleOwner) {
-            if (it.isNotBlank()) {
-                binding.answerField.error = it
-            }
-        }
-        viewModel.translationError.observe(viewLifecycleOwner) {
-            if (it.isNotBlank()) {
-                binding.translationField.error = it
-            }
-        }
+        checkFieldsForNotBlank()
         viewModel.status.observe(viewLifecycleOwner) {
             if (it.isProcessed) {
                 return@observe
@@ -92,6 +59,47 @@ class SaveEditFragment : Fragment() {
             createOrUpdateCard()
         }
         return binding.root
+    }
+
+    private fun checkFieldsForNotBlank() {
+        viewModel.questionError.observe(viewLifecycleOwner) {
+            if (it.isNotBlank()) {
+                binding.questionField.error = it
+            }
+        }
+        viewModel.exampleError.observe(viewLifecycleOwner) {
+            if (it.isNotBlank()) {
+                binding.exampleField.error = it
+            }
+        }
+        viewModel.answerError.observe(viewLifecycleOwner) {
+            if (it.isNotBlank()) {
+                binding.answerField.error = it
+            }
+        }
+        viewModel.translationError.observe(viewLifecycleOwner) {
+            if (it.isNotBlank()) {
+                binding.translationField.error = it
+            }
+        }
+    }
+
+    private fun observeCardAndImage() {
+        viewModel.card.observe(viewLifecycleOwner) {
+            binding.questionField.setText(it.question)
+            binding.exampleField.setText(it.example)
+            binding.answerField.setText(it.answer)
+            binding.translationField.setText(it.translation)
+            if (it.image != null) {
+                binding.cardImage.setImageBitmap(it.image)
+                viewModel.setImage(it.image)
+            } else {
+                binding.cardImage.setImageResource(R.drawable.image_icon)
+            }
+        }
+        viewModel.image.observe(viewLifecycleOwner) {
+            binding.cardImage.setImageBitmap(it)
+        }
     }
 
     private fun validateFields() {

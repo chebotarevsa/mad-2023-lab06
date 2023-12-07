@@ -27,17 +27,7 @@ class SeeFragment : Fragment() {
         _binding = FragmentSeeBinding.inflate(layoutInflater, container, false)
         viewModel.setCard(cardId)
 
-        viewModel.card.observe(viewLifecycleOwner) {
-            binding.cardQuestion.text = getString(R.string.question_field, it.question)
-            binding.cardExample.text = getString(R.string.example_field, it.example)
-            binding.cardAnswer.text = getString(R.string.answer_field, it.answer)
-            binding.cardTranslation.text = getString(R.string.translation_field, it.translation)
-            if (it.image != null) {
-                binding.cardThumbnail.setImageBitmap(it.image)
-            } else {
-                binding.cardThumbnail.setImageResource(R.drawable.image_icon)
-            }
-        }
+        observeCardAndImage()
 
         binding.editButton.setOnClickListener {
             val action = SeeFragmentDirections.actionSeeCardFragmentToEditCardFragment(cardId)
@@ -53,6 +43,20 @@ class SeeFragment : Fragment() {
                 }
             })
         return binding.root
+    }
+
+    private fun observeCardAndImage() {
+        viewModel.card.observe(viewLifecycleOwner) {
+            binding.cardQuestion.text = getString(R.string.question_field, it.question)
+            binding.cardExample.text = getString(R.string.example_field, it.example)
+            binding.cardAnswer.text = getString(R.string.answer_field, it.answer)
+            binding.cardTranslation.text = getString(R.string.translation_field, it.translation)
+            if (it.image != null) {
+                binding.cardThumbnail.setImageBitmap(it.image)
+            } else {
+                binding.cardThumbnail.setImageResource(R.drawable.image_icon)
+            }
+        }
     }
 
     override fun onDestroy() {
