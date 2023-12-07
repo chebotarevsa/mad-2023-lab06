@@ -1,15 +1,17 @@
 package com.example.lab6mobile
 
+import ViewCardFragmentViewModel
+import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.la6mobile.R
 import com.example.la6mobile.databinding.FragmentViewCardBinding
+import com.example.lab6mobile.Data.TermCard
 
 class ViewCardFragment : Fragment() {
 
@@ -24,31 +26,19 @@ class ViewCardFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentViewCardBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this).get(ViewCardFragmentViewModel::class.java)
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.init(index)
-        initView()
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    private fun initView() {
-        val card = viewModel.getCard()
+        viewModel = ViewModelProvider(this).get(ViewCardFragmentViewModel::class.java)
 
-        if (card != null) {
-            binding.questionField.text = card.question
-            binding.exampleField.text = card.example
-            binding.answerView.text = card.answer
-            binding.translateView.text = card.translate
-
-            if (card.image != null) {
-                binding.imageView3.setImageBitmap(card.image)
-            } else {
-                binding.imageView3.setImageResource(R.drawable.ic_image)
+        viewModel.card.observe(viewLifecycleOwner, { card ->
+            card?.let {
+                updateUI(it)
             }
-        }
+        })
 
         binding.button.setOnClickListener {
             val action =
@@ -57,5 +47,21 @@ class ViewCardFragment : Fragment() {
                 }
             findNavController().navigate(action)
         }
+
+        viewModel.init(index)
+    }
+
+    private fun updateUI(card: TermCard) {
+        binding.questionField.text = card.question
+        binding.exampleField.text = card.example
+        binding.answerView.text = card.answer
+        binding.translateView.text = card.translate
+
+        if (card.image != null) {
+            binding.imageView3.setImageBitmap(card.image)
+        } else {
+            binding.imageView3.setImageResource(R.drawable.ic_image)
+        }
     }
 }
+

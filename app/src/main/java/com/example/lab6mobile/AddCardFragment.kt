@@ -49,6 +49,10 @@ class AddCardFragment : Fragment() {
             addTermCard()
         }
 
+        viewModel.imageBitmap.observe(viewLifecycleOwner) { bitmap ->
+            binding.imageView2.setImageBitmap(bitmap)
+        }
+
         return binding.root
     }
 

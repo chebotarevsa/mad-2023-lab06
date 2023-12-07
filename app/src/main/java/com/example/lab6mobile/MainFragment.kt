@@ -42,9 +42,9 @@ class MainFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.cardsList.observe(viewLifecycleOwner, { cards ->
+        viewModel.cardsList.observe(viewLifecycleOwner) { cards ->
             adapter.setItem(cards)
-        })
+        }
     }
 
     override fun onResume() {
