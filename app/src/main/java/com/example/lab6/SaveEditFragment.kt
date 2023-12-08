@@ -32,7 +32,6 @@ class SaveEditFragment : Fragment() {
         binding.cardImage.setOnClickListener {
             getSystemContent.launch("image/*")
         }
-        checkFieldsForNotBlank()
         viewModel.status.observe(viewLifecycleOwner) {
             if (it.isProcessed) {
                 return@observe
@@ -59,29 +58,6 @@ class SaveEditFragment : Fragment() {
             createOrUpdateCard()
         }
         return binding.root
-    }
-
-    private fun checkFieldsForNotBlank() {
-        viewModel.questionError.observe(viewLifecycleOwner) {
-            if (it.isNotBlank()) {
-                binding.questionField.error = it
-            }
-        }
-        viewModel.exampleError.observe(viewLifecycleOwner) {
-            if (it.isNotBlank()) {
-                binding.exampleField.error = it
-            }
-        }
-        viewModel.answerError.observe(viewLifecycleOwner) {
-            if (it.isNotBlank()) {
-                binding.answerField.error = it
-            }
-        }
-        viewModel.translationError.observe(viewLifecycleOwner) {
-            if (it.isNotBlank()) {
-                binding.translationField.error = it
-            }
-        }
     }
 
     private fun observeCardAndImage() {
