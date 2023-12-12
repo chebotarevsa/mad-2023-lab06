@@ -35,25 +35,25 @@ class AddCardFragment : Fragment() {
                 binding.setQuestion.text.toString()
                     .isNotEmpty() -> binding.setQuestion.text.toString()
 
-                else -> "Поле вопроса отсутствует"
+                else -> getString(R.string.misquestion)
             }
             val example = when {
                 binding.setExample.text.toString()
                     .isNotEmpty() -> binding.setExample.text.toString()
 
-                else -> "Поле примера отсутствует"
+                else -> getString(R.string.misexample)
             }
             val answer = when {
                 binding.setAnswer.text.toString()
                     .isNotEmpty() -> binding.setAnswer.text.toString()
 
-                else -> "Поле ответа отсутствует"
+                else -> getString(R.string.misanswer)
             }
             val translation = when {
                 binding.setTranslation.text.toString()
                     .isNotEmpty() -> binding.setTranslation.text.toString()
 
-                else -> "Поле перевода отсутствует"
+                else -> getString(R.string.mistranslation)
             }
             val newCard = Cards.createNewCard(
                 question, example, answer, translation, imageUri

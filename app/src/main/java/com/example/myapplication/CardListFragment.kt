@@ -70,20 +70,21 @@ class CardListFragment : Fragment() {
         val card = Cards.getCardById(cardId)
 
         AlertDialog.Builder(requireContext()).setIcon(android.R.drawable.ic_dialog_alert)
-            .setTitle("Вы действительно хотите удалить карточку?")
-            .setMessage("Будет удалена карточка:\n ${card.answer} / ${card.translation}")
-            .setPositiveButton("Да") { _, _ ->
+            .setTitle(getString(R.string.delete_card_title))
+            .setMessage(getString(R.string.delete_card_message, card.answer, card.translation))
+            .setPositiveButton(getString(R.string.yes)) { _, _ ->
                 Cards.removeCard(card.id)
                 adapter.refreshCardsViewWith(Cards.cards)
                 Toast.makeText(
-                    requireContext(), "Удалено успешно", Toast.LENGTH_LONG
+                    requireContext(), getString(R.string.deleted_successfully), Toast.LENGTH_LONG
                 ).show()
-            }.setNegativeButton("Нет") { _, _ ->
+            }.setNegativeButton(getString(R.string.no)) { _, _ ->
                 Toast.makeText(
-                    requireContext(), "Удаление отменено", Toast.LENGTH_LONG
+                    requireContext(), getString(R.string.deletion_canceled), Toast.LENGTH_LONG
                 ).show()
                 adapter.notifyItemChanged(cardId)
             }.show()
+
     }
 
 }

@@ -44,25 +44,25 @@ class EditCardFragment : Fragment() {
                 binding.questionField.text.toString()
                     .isNotEmpty() -> binding.questionField.text.toString()
 
-                else -> "Поле вопроса отсутствует"
+                else -> getString(R.string.misquestion)
             }
             val example = when {
                 binding.exampleField.text.toString()
                     .isNotEmpty() -> binding.exampleField.text.toString()
 
-                else -> "Поле примера отсутствует"
+                else -> getString(R.string.misexample)
             }
             val answer = when {
                 binding.answerField.text.toString()
                     .isNotEmpty() -> binding.answerField.text.toString()
 
-                else -> "Поле ответа отсутствует"
+                else -> getString(R.string.misanswer)
             }
             val translation = when {
                 binding.translationField.text.toString()
                     .isNotEmpty() -> binding.translationField.text.toString()
 
-                else -> "Поле перевода отсутствует"
+                else -> getString(R.string.mistranslation)
             }
             val newCard = Cards.updateCard(
                 card, question, example, answer, translation, imageUri
