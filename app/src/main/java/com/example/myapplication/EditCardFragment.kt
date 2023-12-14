@@ -27,7 +27,6 @@ class EditCardFragment : Fragment() {
         super.onCreate(savedInstanceState)
         _binding = FragmentEditCardBinding.inflate(layoutInflater, container, false)
 
-
         viewModel.card.observe(viewLifecycleOwner) {
         binding.questionField.setText(it.question)
         binding.exampleField.setText(it.example)
@@ -44,6 +43,10 @@ class EditCardFragment : Fragment() {
 
         binding.cardImage.setOnClickListener {
             getSystemContent.launch("image/*")
+        }
+
+        viewModel.image.observe(viewLifecycleOwner) {
+            binding.cardImage.setImageBitmap(it)
         }
 
         binding.saveButton.setOnClickListener {

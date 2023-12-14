@@ -20,9 +20,7 @@ class CardListViewModel : ViewModel() {
     }
 
     fun deleteCard(cardId: Int) {
-        thread {
-            val card = cards.value?.first { it.id == cardId }
-            card?.let { viewModelScope.launch { Cards.removeCard(cardId) } }
-        }
+        Cards.removeCard(cardId)
+        _cards.value = Cards.cards
     }
 }

@@ -30,7 +30,9 @@ class CardListFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         adapter = RecyclerAdapter(action).apply {
-            cards = Cards.cards
+            viewModel.cards.observe(viewLifecycleOwner) {
+                cards = it
+            }
         }
 
         recyclerView.adapter = adapter
