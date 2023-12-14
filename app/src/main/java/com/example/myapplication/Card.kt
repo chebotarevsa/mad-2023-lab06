@@ -1,6 +1,6 @@
 package com.example.myapplication
 
-import android.net.Uri
+import android.graphics.Bitmap
 
 data class Card(
     val id: Int,
@@ -8,5 +8,5 @@ data class Card(
     val example: String,
     val answer: String,
     val translation: String,
-    val imageURI: Uri? = null
+    val image: Bitmap? = null
 )

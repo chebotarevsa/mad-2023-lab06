@@ -1,15 +1,14 @@
 package com.example.myapplication
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentViewCardBinding
 
 class ViewCardFragment : Fragment() {
@@ -18,19 +17,26 @@ class ViewCardFragment : Fragment() {
 
     private val args by navArgs<ViewCardFragmentArgs>()
     private val cardId by lazy { args.cardId }
+    private val viewModel: ViewCardViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         super.onCreate(savedInstanceState)
         _binding = FragmentViewCardBinding.inflate(layoutInflater, container, false)
+        viewModel.setCardOfFragment(cardId)
 
-        val card = Cards.cards.get(cardId)
-
-        binding.cardQuestion.text = getString(R.string.questionField, card.question)
-        binding.cardExample.text = getString(R.string.exampleField, card.example)
-        binding.cardAnswer.text = getString(R.string.answerField, card.answer)
-        binding.cardTranslation.text = getString(R.string.translationField, card.translation)
-        binding.cardThumbnail.setImageURI(card.imageURI)
+        viewModel.card.observe(viewLifecycleOwner) {
+            binding.cardQuestion.text = getString(R.string.questionField, it.question)
+            binding.cardExample.text = getString(R.string.exampleField, it.example)
+            binding.cardAnswer.text = getString(R.string.answerField, it.answer)
+            binding.cardTranslation.text = getString(R.string.translationField, it.translation)
+            binding.cardThumbnail.setImageBitmap(it.image)
+            if (it.image != null) {
+            binding.cardThumbnail.setImageBitmap(it.image)
+            } else {
+                binding.cardThumbnail.setImageResource(R.drawable.imageicon)
+            }
+        }
 
         binding.editButton.setOnClickListener {
             val action = ViewCardFragmentDirections.actionViewCardFragmentToEditCardFragment(cardId)

@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_cardListFragment_to_viewCardFragment"
             app:destination="@id/viewCardFragment" />
+        <action
+            android:id="@+id/action_cardListFragment_to_editCardFragment"
+            app:destination="@id/editCardFragment" />
     </fragment>
     <fragment
         android:id="@+id/editCardFragment"
@@ -28,6 +31,12 @@
         <argument
             android:name="cardId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_editCardFragment_to_cardListFragment"
+            app:destination="@id/cardListFragment" />
+        <action
+            android:id="@+id/action_editCardFragment_to_viewCardFragment2"
+            app:destination="@id/viewCardFragment" />
     </fragment>
     <fragment
         android:id="@+id/viewCardFragment"
@@ -42,6 +51,9 @@
             app:destination="@id/cardListFragment" />
         <argument android:name="cardId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_viewCardFragment_to_editCardFragment2"
+            app:destination="@id/editCardFragment" />
     </fragment>
     <fragment
         android:id="@+id/addCardFragment"

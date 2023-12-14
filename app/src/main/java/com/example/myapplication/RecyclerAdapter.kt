@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -33,8 +35,8 @@ class RecyclerAdapter(private val action: ActionInterface) :
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val card = cards[position]
-        if (card.imageURI != null) {
-            holder.thumbnailImage.setImageURI(cards[position].imageURI)
+        if (card.image != null) {
+            holder.thumbnailImage.setImageBitmap(cards[position].image)
         } else {
             holder.thumbnailImage.setImageResource(R.drawable.imageicon)
         }
@@ -44,7 +46,16 @@ class RecyclerAdapter(private val action: ActionInterface) :
             action.onItemClick(card.id)
         }
         holder.deleteImage.setOnClickListener {
-            action.onDeleteCard(card.id)
+            AlertDialog.Builder(holder.deleteImage.context)
+                .setIcon(android.R.drawable.ic_menu_delete)
+                .setTitle("Вы действительно хотите удалить карточку?").setMessage(
+                    "Будет удалена карточка:" + "\n ${card.answer} / ${card.translation}"
+                ).setPositiveButton("Да") { _, _ -> action.onDeleteCard(card.id!!) }
+                .setNegativeButton("Нет") { _, _ ->
+                    Toast.makeText(
+                        holder.deleteImage.context, "Удаление отменено", Toast.LENGTH_LONG
+                    ).show()
+                }.show()
         }
     }
 
@@ -92,7 +103,4 @@ class RecyclerAdapter(private val action: ActionInterface) :
 
 
 }
-interface ActionInterface {
-    fun onItemClick(cardId: Int)
-    fun onDeleteCard(cardId: Int)
-}
+

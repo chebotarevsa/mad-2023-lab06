@@ -1,6 +1,6 @@
 package com.example.myapplication
 
-import android.net.Uri
+import android.graphics.Bitmap
 
 object Cards {
 
@@ -45,19 +45,19 @@ object Cards {
         example: String,
         answer: String,
         translation: String,
-        imageURI: Uri?
+        image: Bitmap?
     ): Card {
-        return oldCard.copy(oldCard.id, question, example, answer, translation, imageURI)
+        return oldCard.copy(oldCard.id, question, example, answer, translation, image)
     }
 
     fun getCardById(id: Int): Card =
         _cards.first { it.id == id }
 
     fun createNewCard(
-        question: String, example: String, answer: String, translation: String, imageURI: Uri?
+        question: String, example: String, answer: String, translation: String, image: Bitmap?
     ): Card {
         val nextId = _cards.maxBy { it.id }.id + 1
-        val card = Card(nextId, question, example, answer, translation, imageURI)
+        val card = Card(nextId, question, example, answer, translation, image)
         return card
     }
 
