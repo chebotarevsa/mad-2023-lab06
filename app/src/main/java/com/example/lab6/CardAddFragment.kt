@@ -1,4 +1,4 @@
-package com.example.lab5
+package com.example.lab6
 
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
-import com.example.lab5.databinding.FragmentCardAddBinding
+import com.example.lab6.databinding.FragmentCardAddBinding
 
 class CardAddFragment : Fragment() {
     private var _binding: FragmentCardAddBinding? = null

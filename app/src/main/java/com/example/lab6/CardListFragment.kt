@@ -1,4 +1,4 @@
-package com.example.lab5
+package com.example.lab6
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -10,7 +10,7 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.lab5.databinding.FragmentCardListBinding
+import com.example.lab6.databinding.FragmentCardListBinding
 
 class CardListFragment : Fragment() {
     private var _binding: FragmentCardListBinding? = null

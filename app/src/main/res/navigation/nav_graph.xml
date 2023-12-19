@@ -6,7 +6,7 @@
     app:startDestination="@id/cardListFragment">
     <fragment
         android:id="@+id/cardListFragment"
-        android:name="com.example.lab5.CardListFragment"
+        android:name="com.example.lab6.CardListFragment"
         android:label="fragment_card_list"
         tools:layout="@layout/fragment_card_list" >
         <action
@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/cardAddFragment"
-        android:name="com.example.lab5.CardAddFragment"
+        android:name="com.example.lab6.CardAddFragment"
         android:label="fragment_card_add"
         tools:layout="@layout/fragment_card_add" >
         <action
@@ -27,7 +27,7 @@
     </fragment>
     <fragment
         android:id="@+id/cardEditFragment"
-        android:name="com.example.lab5.CardEditFragment"
+        android:name="com.example.lab6.CardEditFragment"
         android:label="fragment_card_edit"
         tools:layout="@layout/fragment_card_edit" >
         <action
@@ -39,7 +39,7 @@
     </fragment>
     <fragment
         android:id="@+id/cardViewFragment"
-        android:name="com.example.lab5.CardViewFragment"
+        android:name="com.example.lab6.CardViewFragment"
         android:label="fragment_card_see"
         tools:layout="@layout/fragment_card_view" >
         <action

@@ -1,8 +1,8 @@
-package com.example.lab5
+package com.example.lab6
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.lab5.databinding.ActivityMainBinding
+import com.example.lab6.databinding.ActivityMainBinding
 
 class CardListActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
