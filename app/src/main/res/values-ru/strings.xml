@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Lab6</string>
+    <string name="questionField">Вопрос: %1$s</string>
+    <string name="exampleField">Поле примера: %1$s</string>
+    <string name="answerField">Ответ: %1$s</string>
+    <string name="translationField">Перевод: %1$s</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Привет пустой фрагмент</string>
+    <string name="edit_card_text">Измените карточку</string>
+    <string name="enter_question_text">Введите вопрос</string>
+    <string name="enter_example_text">Введите пример</string>
+    <string name="enter_answer_text">Введите ответ</string>
+    <string name="enter_translation_text">Введите перевод</string>
+    <string name="view_card_text">Посмотреть карточку</string>
+    <string name="placeholder_text">Текст</string>
+</resources>
