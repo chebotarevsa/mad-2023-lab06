@@ -38,14 +38,14 @@ class CustomRecyclerAdapter(
         val card = cards[position]
         holder.itemView.tag = card.id
         if (card.image != null) {
-            holder.thumbnailImage.setImageBitmap(Model.getCardById(card.id).image)
+            holder.thumbnailImage.setImageBitmap(card.id?.let { Model.getCardById(it).image })
         } else {
             holder.thumbnailImage.setImageResource(R.drawable.icon)
         }
         holder.largeTextView.text = card.answer
         holder.smallTextView.text = card.translation
         holder.itemView.setOnClickListener {
-            action.onItemClick(card.id)
+            card.id?.let { it1 -> action.onItemClick(it1) }
 
         }
         holder.deleteImage.setOnClickListener {
@@ -55,7 +55,6 @@ class CustomRecyclerAdapter(
                     "Будет удалена карточка:" + "\n ${card.answer} / ${card.translation}"
                 ).setPositiveButton("Да") { _, _ ->
                     action.onDeleteCard(card.id!!)
-                refreshCardsViewWith(Model.cards)
                 }
                 .setNegativeButton("Нет") { _, _ ->
                     Toast.makeText(
@@ -63,11 +62,6 @@ class CustomRecyclerAdapter(
                     ).show()
                 }.show()
         }
-    }
-
-    fun refreshCardsViewWith(cards: List<Card>) {
-        this.cards = cards
-        notifyDataSetChanged()
     }
 }
 

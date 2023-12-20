@@ -52,11 +52,6 @@ object Model {
         _cards.add(card)
     }
 
-    fun updateCardList(card1: Card, card2: Card) {
-        val num = _cards.indexOf(card1)
-        _cards.remove(card1)
-        _cards.add(num, card2)
-    }
 
     fun updateCardList(cardId: String, card: Card) {
         _cards.remove(getCardById(cardId))
@@ -77,7 +72,7 @@ object Model {
     fun createNewCard(
         question: String, example: String, answer: String, translation: String, image: Bitmap?
     ): Card {
-        val nextId = _cards.maxBy { it.id }.id + 1
+        val nextId = _cards.maxBy { it.id!! }.id + 1
         val card = Card(nextId, question, example, answer, translation, image)
         return card
     }

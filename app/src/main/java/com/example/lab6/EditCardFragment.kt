@@ -1,12 +1,12 @@
 package com.example.lab6
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.lab6.databinding.FragmentEditCardBinding
@@ -16,23 +16,30 @@ class EditCardFragment : Fragment() {
 
     private var _binding: FragmentEditCardBinding? = null
     private val binding get() = _binding!!
-    private var image: Bitmap? = null
 
     private val args by navArgs<EditCardFragmentArgs>()
     private val cardId by lazy { args.cardId }
+    private val viewModel: EditCardViewModel by viewModels { EditCardViewModel.Factory(cardId) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentEditCardBinding.inflate(layoutInflater, container, false)
-        var card = Model.getCardById(cardId)
-
-        binding.questionField.setText(card.question)
-        binding.exampleField.setText(card.example)
-        binding.answerField.setText(card.answer)
-        binding.translationField.setText(card.translation)
-        card.image?.let {
+        viewModel.card.observe(viewLifecycleOwner) {
+            binding.number.setText(viewModel.card.value!!.id)
+            binding.questionField.setText(viewModel.card.value!!.question)
+            binding.exampleField.setText(viewModel.card.value!!.example)
+            binding.answerField.setText(viewModel.card.value!!.answer)
+            binding.translationField.setText(viewModel.card.value!!.translation)
+            if (it.image != null) {
+                binding.cardImage.setImageBitmap(it.image)
+                viewModel.setImage(it.image)
+            } else {
+                binding.cardImage.setImageResource(R.drawable.icon)
+            }
+        }
+        viewModel.image.observe(viewLifecycleOwner){
             binding.cardImage.setImageBitmap(it)
         }
 
@@ -56,26 +63,20 @@ class EditCardFragment : Fragment() {
 
 
             if (cardId == "-1") {
-                card = Model.createNewCard(question, example, answer, translation, image)
-                Model.addCard(card)
-                val action = EditCardFragmentDirections.actionEditCardFragmentToSeeCardFragment(card.id)
+                viewModel.addCard(question,example,answer, translation, viewModel.image.value)
+                val action = EditCardFragmentDirections.actionEditCardFragmentToCardListFragment()
                 findNavController().navigate(action)
             } else {
-                val newCard = Model.updateCard(
-                    card, question, example, answer, translation, image
-                )
-                Model.updateCardList(cardId, newCard)
+                viewModel.updateCardById(cardId,question,example,answer, translation)
                 val action = EditCardFragmentDirections.actionEditCardFragmentToSeeCardFragment(cardId)
                 findNavController().navigate(action)
             }
-
         }
         return binding.root
     }
 
     private val getSystemContent = registerForActivityResult(ActivityResultContracts.GetContent()) {
-        image = it.bitmap(requireContext())
-        binding.cardImage.setImageBitmap(image)
+        viewModel.setImage(it.bitmap(requireContext()))
     }
 
     override fun onDestroy() {
