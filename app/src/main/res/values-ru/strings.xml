@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lab6</string>
+    <string name="word">Слово</string>
+    <string name="translation">Перевод</string>
+    <string name="addButton">Добавить</string>
+    <string name="cardView">Просмотр</string>
+    <string name="picture_placeholder">Картинка или шаблон</string>
+    <string name="questionField">Вопрос: %1$s</string>
+    <string name="exampleField">Подсказка: %1$s</string>
+    <string name="answerField">Ответ: %1$s</string>
+    <string name="translationField">Перевод: %1$s</string>
+    <string name="editButton">Редактировать</string>
+    <string name="backButton">Назад</string>
+    <string name="CardAdd">Добавить карту</string>
+    <string name="enterTranslation">Введите перевод</string>
+    <string name="enterAnswer">Введите ответ</string>
+    <string name="enterExample">Введите пример</string>
+    <string name="enterQuestion">Введите вопрос</string>
+    <string name="CardEdit">Редактирование карточки</string>
+    <string name="saveButton">Сохранение</string>
+    <string name="cardList">Список карт</string>
+    <string name="deleteWarning">Вы действительно хотите удалить карточку?</string>
+    <string name="deletionMessage">Будет удалена карточка:\\n %1$s / %2$s</string>
+    <string name="Yes">Да</string>
+    <string name="No">No</string>
+    <string name="unfilledQuestion">Поле вопроса отсутствует</string>
+    <string name="unfilledExample">Поле примера отсутствует</string>
+    <string name="unfilledAnswer">Поле ответа отсутствует</string>
+    <string name="unfilledTranslation">Поле перевода отсутствует</string>
+    <string name="deletionReverted">Удаление отменено</string>
+</resources>
