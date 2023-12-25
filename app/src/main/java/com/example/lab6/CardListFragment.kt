@@ -1,12 +1,15 @@
 package com.example.lab6
 
+//noinspection SuspiciousImport
+import android.R
 import android.app.AlertDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,47 +19,51 @@ class CardListFragment : Fragment() {
     private var _binding: FragmentCardListBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: AdapterRecyclerView
+    private val viewModel: CardListViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentCardListBinding.inflate(layoutInflater)
+        _binding = FragmentCardListBinding.inflate(layoutInflater, container, false)
         val recyclerView: RecyclerView = binding.recyclerId
         recyclerView.layoutManager = LinearLayoutManager(context)
         adapter = AdapterRecyclerView(action).apply {
-            cards = Model.cards
+            viewModel.cards.observe(viewLifecycleOwner) {
+                cards = it
+            }
         }
         recyclerView.adapter = adapter
-
         binding.addButton.setOnClickListener {
-            val action =
-                CardListFragmentDirections.actionCardListFragmentToCardAddFragment()
-            findNavController().navigate(action)
+            val navAction = CardListFragmentDirections.actionCardListFragmentToCardAddFragment()
+            findNavController().navigate(navAction)
         }
         return binding.root
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     private val action = object : ActionInterface {
         override fun onItemClick(cardId: Int) {
-            val action = CardListFragmentDirections.actionCardListFragmentToCardSeeFragment(cardId)
+            val action = CardListFragmentDirections.actionCardListFragmentToCardViewFragment(cardId)
             findNavController().navigate(action)
         }
 
         override fun onDeleteCard(cardId: Int) {
-            val card = Model.getCardById(cardId)
-            AlertDialog.Builder(requireContext()).setIcon(android.R.drawable.ic_dialog_alert)
-                .setTitle("Are you sure you want to delete the card?")
-                .setMessage("The following card will be deleted:\n ${card.answer} / ${card.translation}")
-                .setPositiveButton("Yes") { _, _ ->
-                    Model.removeCard(card.id)
-                    adapter.cards = Model.cards
-                }.setNegativeButton("No") { _, _ ->
-                    Toast.makeText(
-                        requireContext(), "Deletion canceled", Toast.LENGTH_LONG
-                    ).show()
+            viewModel.setCardOfFragment(cardId)
+            AlertDialog.Builder(requireContext())
+                .setIcon(R.drawable.ic_menu_delete)
+                .setTitle("Вы действительно хотите удалить карточку?")
+                .setMessage(
+                    "Будет удалена карточка:" + viewModel.getCardShortData()
+                )
+                .setPositiveButton("Да") { _, _ -> viewModel.removeCardById(cardId) }
+                .setNegativeButton("Нет") { _, _ ->
+                    Toast
+                        .makeText(requireContext(), "Удаление отменено", Toast.LENGTH_LONG)
+                        .show()
                 }.show()
         }
     }

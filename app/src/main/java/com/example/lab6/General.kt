@@ -15,4 +15,9 @@ fun Uri?.bitmap(context: Context): Bitmap? {
             MediaStore.Images.Media.getBitmap(context.contentResolver, it)// fallback decoder
         }
     }
+
+}
+interface ActionInterface {
+    fun onItemClick(cardId: Int)
+    fun onDeleteCard(cardId: Int)
 }
